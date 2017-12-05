@@ -1,19 +1,28 @@
 #!/bin/bash
 
+echo "installing hugo"
+
+case "`uname`" in
+    Linux)
+        mkdir -p /opt/hugo
+        wget -P /tmp/ https://github.com/spf13/hugo/releases/download/v0.20.2/hugo_0.20.2_Linux-64bit.tar.gz
+        tar -xvf /tmp/hugo_0.20.2_Linux-64bit.tar.gz -C /opt/hugo
+        ln -s /opt/hugo/hugo_0.20.2_linux_amd64/hugo_0.20.2_linux_amd64 /opt/hugo/hugo_0.20.2_linux_amd64/hugo
+        export PATH=$PATH:/opt/hugo/hugo_0.20.2_linux_amd64
+    ;;
+    Darwin)
+        brew install hugo
+    ;;
+esac
+
 echo "standing up docs"
-#standup the docs
-#install hugo
-mkdir /opt
-mkdir /opt/hugo
-wget -P /tmp/ https://github.com/spf13/hugo/releases/download/v0.20.2/hugo_0.20.2_Linux-64bit.tar.gz
-tar -xvf /tmp/hugo_0.20.2_Linux-64bit.tar.gz -C /opt/hugo
 
 git submodule update --init
 git submodule sync
 
 
 cd docsrc
-/opt/hugo/hugo_0.20.2_linux_amd64/hugo_0.20.2_linux_amd64
+hugo
 
 #python 2.7 specific
 cd ./public && python -m SimpleHTTPServer 1313 >> /tmp/hugo.log 2>&1 &
